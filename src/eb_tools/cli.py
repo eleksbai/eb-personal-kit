@@ -5,6 +5,8 @@ from importlib import metadata
 
 import click
 
+from eb_tools.service import service
+
 
 def get_version() -> str:
     """Return the installed distribution version."""
@@ -20,6 +22,9 @@ def get_version() -> str:
 @click.version_option(version=get_version(), prog_name="eb")
 def main() -> None:
     """eb-tools command line interface."""
+
+
+main.add_command(service)
 
 
 if __name__ == "__main__":

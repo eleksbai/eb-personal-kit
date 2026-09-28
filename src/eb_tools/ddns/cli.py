@@ -92,3 +92,7 @@ def main(
     logger = setup_logging(config.enable_debug)
     logger.info("start...")
     DDNS(config).run()
+
+
+if __name__ == "__main__":
+    main()
