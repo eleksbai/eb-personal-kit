@@ -7,6 +7,7 @@ build/
 
 # Environments
 .venv/
+.env
 
 # Testing / tooling caches
 .pytest_cache/

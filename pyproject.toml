@@ -7,13 +7,21 @@ name = "eb-tools"
 version = "0.1.0"
 description = "A collection of handy tools"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
     "click>=8.5.0",
 ]
 
+[project.optional-dependencies]
+ddns = [
+    "pydantic-settings>=2.6",
+    "requests>=2.31",
+    "tencentcloud-sdk-python>=3.0.1103",
+]
+
 [project.scripts]
 eb = "eb_tools.cli:main"
+eb-ddns = "eb_tools.ddns.cli:main"
 
 [dependency-groups]
 dev = [
@@ -26,7 +34,7 @@ testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py312"
+target-version = "py313"
 
 [tool.ruff.lint]
 select = [
