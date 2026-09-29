@@ -8,23 +8,15 @@ inside :func:`main` so that importing this module does not require the
 
 from __future__ import annotations
 
-from importlib import metadata
-
 import click
 
-
-def get_version() -> str:
-    """Return the installed distribution version."""
-    try:
-        return metadata.version("eb-tools")
-    except metadata.PackageNotFoundError:  # pragma: no cover - running from source
-        return "0.0.0+unknown"
+import eb_tools
 
 
 @click.command(
     context_settings={"help_option_names": ["-h", "--help"]},
 )
-@click.version_option(version=get_version(), prog_name="eb-ddns")
+@click.version_option(version=eb_tools.__version__, prog_name="eb-ddns")
 @click.option("--secret-id", default=None, help="Tencent Cloud secret id.")
 @click.option("--secret-key", default=None, help="Tencent Cloud secret key.")
 @click.option(

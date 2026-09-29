@@ -1,26 +1,18 @@
 """Command-line interface for eb-tools."""
 
 import sys
-from importlib import metadata
 
 import click
 
+import eb_tools
 from eb_tools.monitor.cli import main as monitor
 from eb_tools.service import service
-
-
-def get_version() -> str:
-    """Return the installed distribution version."""
-    try:
-        return metadata.version("eb-tools")
-    except metadata.PackageNotFoundError:  # pragma: no cover - running from source
-        return "0.0.0+unknown"
 
 
 @click.group(
     context_settings={"help_option_names": ["-h", "--help"]},
 )
-@click.version_option(version=get_version(), prog_name="eb")
+@click.version_option(version=eb_tools.__version__, prog_name="eb")
 def main() -> None:
     """eb-tools command line interface."""
 

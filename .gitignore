@@ -5,6 +5,9 @@ __pycache__/
 dist/
 build/
 
+# hatch-vcs 生成
+src/eb_tools/_version.py
+
 # Environments
 .venv/
 
@@ -16,5 +19,8 @@ htmlcov/
 
 # IDE
 .idea/
+
+tmp/
+
 *.env
 *.service

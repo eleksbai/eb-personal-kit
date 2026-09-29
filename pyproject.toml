@@ -1,13 +1,28 @@
 [build-system]
-requires = ["uv_build>=0.11.7,<0.12.0"]
-build-backend = "uv_build"
+requires = ["hatchling>=1.26", "hatch-vcs>=0.4"]
+build-backend = "hatchling.build"
 
 [project]
 name = "eb-tools"
-version = "0.1.0"
 description = "A collection of handy tools"
 readme = "README.md"
+license = "MIT"
+authors = [{ name = "eleksbai", email = "eleksbai@qq.com" }]
+keywords = ["ddns",  "monitor",  "cli"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: System Administrators",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: Name Service (DNS)",
+    "Topic :: System :: Monitoring",
+]
 requires-python = ">=3.11"
+dynamic = ["version"]
 dependencies = [
     "click>=8.5.0",
     "cryptography>=50.0.1",
@@ -18,9 +33,26 @@ dependencies = [
     "tencentcloud-sdk-python>=3.0.1103",
 ]
 
+[project.urls]
+Homepage = "https://github.com/eleksbai/eb-tools"
+Repository = "https://github.com/eleksbai/eb-tools"
+Issues = "https://github.com/eleksbai/eb-tools/issues"
+
 [project.scripts]
 eb = "eb_tools.cli:main"
 eb-ddns = "eb_tools.ddns.cli:main"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+fallback_version = "0.1.0"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/eb_tools/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/eb_tools"]
 
 [dependency-groups]
 dev = [

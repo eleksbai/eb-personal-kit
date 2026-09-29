@@ -8,24 +8,16 @@ the ``monitor`` dependencies.
 
 from __future__ import annotations
 
-from importlib import metadata
-
 import click
 
-
-def get_version() -> str:
-    """Return the installed distribution version."""
-    try:
-        return metadata.version("eb-tools")
-    except metadata.PackageNotFoundError:  # pragma: no cover - running from source
-        return "0.0.0+unknown"
+import eb_tools
 
 
 @click.command(
     name="monitor",
     context_settings={"help_option_names": ["-h", "--help"]},
 )
-@click.version_option(version=get_version(), prog_name="eb-monitor")
+@click.version_option(version=eb_tools.__version__, prog_name="eb-monitor")
 @click.option(
     "--public-key-path",
     default=None,

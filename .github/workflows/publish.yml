@@ -1,0 +1,53 @@
+name: Publish to PyPI
+
+# 推送 v* tag 时触发发布；版本号由 hatch-vcs 从 tag 派生（v1.2.3 -> 1.2.3）
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      # Trusted Publishing（OIDC）必需，PyPI 官方推荐的免 token 发布方式
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # hatch-vcs 需要完整历史与 tag 才能计算版本号
+          fetch-depth: 0
+
+      - name: Verify tag format
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          if ! echo "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]{6}(\.[0-9]+)?$'; then
+            echo "::error::Tag '${TAG}' 不符合格式 v<主>.<次>.<YYMMDD>[.<序号>]，例如 v0.1.260930"
+            exit 1
+          fi
+
+      - name: Verify tag points to master HEAD
+        run: |
+          if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/master)" ]; then
+            echo "::error::Tag 未指向 master 最新提交，拒绝发布旧版本"
+            exit 1
+          fi
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Lint
+        run: uv run ruff check
+
+      - name: Run tests
+        run: uv run pytest
+
+      - name: Build distributions
+        run: uv build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
