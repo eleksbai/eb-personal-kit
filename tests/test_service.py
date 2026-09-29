@@ -45,7 +45,38 @@ def test_generate_ddns_service_matches_sample(tmp_path):
         "[Install]\n"
         "WantedBy=multi-user.target\n"
     )
+    # Only required fields are prompted; optional fields keep their defaults.
     env_file = (tmp_path / "eb-ddns.env").read_text(encoding="utf-8")
+    assert env_file == (
+        "EB_DDNS_TENCENTCLOUD_SECRET_ID=id-1\n"
+        "EB_DDNS_TENCENTCLOUD_SECRET_KEY=key-2\n"
+        "EB_DDNS_DOMAIN=example.com\n"
+    )
+    assert "sudo mv" in result.output  # install hint moves files, nothing kept
+    assert "sudo chown root:root /etc/eb/eb-ddns.env" in result.output  # mv keeps file owner
+    assert "/etc/eb/eb-ddns.env" in result.output
+
+
+def test_generate_prompt_all_includes_optional_fields(tmp_path):
+    result = CliRunner().invoke(
+        main,
+        [
+            "service",
+            "generate",
+            "--name",
+            "eb-ddns",
+            "--exec-dir",
+            "/usr/local/bin",
+            "--prompt-all",
+            "-o",
+            str(tmp_path),
+            "ddns",
+        ],
+        input=INTERACTIVE_INPUT,
+    )
+    assert result.exit_code == 0, result.output
+    env_file = (tmp_path / "eb-ddns.env").read_text(encoding="utf-8")
+    # Optional fields fall back to their Settings defaults on empty input.
     assert env_file == (
         "EB_DDNS_TENCENTCLOUD_SECRET_ID=id-1\n"
         "EB_DDNS_TENCENTCLOUD_SECRET_KEY=key-2\n"
@@ -53,9 +84,31 @@ def test_generate_ddns_service_matches_sample(tmp_path):
         "EB_DDNS_IP_SERVER=https://eleksbai.cn/tools/ip\n"
         "EB_DDNS_ENABLE_DEBUG=false\n"
     )
-    assert "sudo mv" in result.output  # install hint moves files, nothing kept
-    assert "sudo chown root:root /etc/eb/eb-ddns.env" in result.output  # mv keeps file owner
-    assert "/etc/eb/eb-ddns.env" in result.output
+
+
+def test_bin_option(tmp_path):
+    # --bin decouples the ExecStart binary from the service name.
+    result = CliRunner().invoke(
+        main,
+        [
+            "service",
+            "generate",
+            "--name",
+            "eb-monitor",
+            "--bin",
+            "eb-monitor-bin",
+            "--exec-dir",
+            "/usr/local/bin",
+            "-o",
+            str(tmp_path),
+            "monitor",
+        ],
+        input=INTERACTIVE_INPUT,
+    )
+    assert result.exit_code == 0, result.output
+    unit = (tmp_path / "eb-monitor.service").read_text(encoding="utf-8")
+    assert "ExecStart=/usr/local/bin/eb-monitor-bin" in unit
+    assert "EnvironmentFile=/etc/eb/eb-monitor.env" in unit
 
 
 def test_read_secret_chars_supports_backspace(monkeypatch):

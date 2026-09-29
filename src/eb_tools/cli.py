@@ -5,6 +5,7 @@ from importlib import metadata
 
 import click
 
+from eb_tools.monitor.cli import main as monitor
 from eb_tools.service import service
 
 
@@ -25,6 +26,7 @@ def main() -> None:
 
 
 main.add_command(service)
+main.add_command(monitor)
 
 
 if __name__ == "__main__":

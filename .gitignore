@@ -7,7 +7,6 @@ build/
 
 # Environments
 .venv/
-.env
 
 # Testing / tooling caches
 .pytest_cache/
@@ -17,3 +16,5 @@ htmlcov/
 
 # IDE
 .idea/
+*.env
+*.service

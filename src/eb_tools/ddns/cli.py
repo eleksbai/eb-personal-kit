@@ -8,12 +8,9 @@ inside :func:`main` so that importing this module does not require the
 
 from __future__ import annotations
 
-import logging
 from importlib import metadata
 
 import click
-
-LOG_FORMAT = "%(asctime)s %(levelname)s: %(message)s"
 
 
 def get_version() -> str:
@@ -22,19 +19,6 @@ def get_version() -> str:
         return metadata.version("eb-tools")
     except metadata.PackageNotFoundError:  # pragma: no cover - running from source
         return "0.0.0+unknown"
-
-
-def setup_logging(enable_debug: bool) -> logging.Logger:
-    """Configure the ``ddns`` logger with a stream handler."""
-    level = logging.DEBUG if enable_debug else logging.INFO
-    formatter = logging.Formatter(LOG_FORMAT)
-    logger = logging.getLogger("ddns")
-    logger.setLevel(level)
-    terminal = logging.StreamHandler()
-    terminal.setFormatter(formatter)
-    logger.handlers.clear()
-    logger.addHandler(terminal)
-    return logger
 
 
 @click.command(
@@ -63,7 +47,7 @@ def main(
     from pydantic import ValidationError
 
     from eb_tools.ddns.client import DDNS
-    from eb_tools.ddns.config import get_settings
+    from eb_tools.ddns.config import get_settings, setup_logging
 
     # Init overrides have the highest priority in pydantic-settings; required
     # fields missing everywhere are reported as a ValidationError.

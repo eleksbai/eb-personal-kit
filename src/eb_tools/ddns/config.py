@@ -6,13 +6,29 @@ a ``.env`` file in the working directory, then field defaults.
 
 from __future__ import annotations
 
+import logging
 from functools import lru_cache
 from typing import Any
 
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+LOG_FORMAT = "%(asctime)s %(levelname)s: %(message)s"
+
 DEFAULT_IP_SERVER = "https://eleksbai.cn/tools/ip"
+
+
+def setup_logging(enable_debug: bool) -> logging.Logger:
+    """Configure the ``ddns`` logger with a stream handler."""
+    level = logging.DEBUG if enable_debug else logging.INFO
+    formatter = logging.Formatter(LOG_FORMAT)
+    logger = logging.getLogger("ddns")
+    logger.setLevel(level)
+    terminal = logging.StreamHandler()
+    terminal.setFormatter(formatter)
+    logger.handlers.clear()
+    logger.addHandler(terminal)
+    return logger
 
 
 class Settings(BaseSettings):

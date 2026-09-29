@@ -1,15 +1,13 @@
 """Generate systemd service files for eb-tools submodules.
 
-Exposed through the main CLI as ``eb service generate MODULE``. The
-environment variables are derived from the module's ``config.Settings``
-(pydantic-settings) fields: required values are asked for interactively
-(secrets are masked with ``*`` as they are typed and backspace works),
-optional ones fall back to the field defaults and
-are written to a ``<name>.env`` environment file that the unit references
-via ``EnvironmentFile=`` (deployed root-only, keeping secrets out of the
-globally readable unit file). Only ``click`` and the
-standard library are imported at module level so the main CLI does not
-pull in optional dependencies.
+Exposed through the main CLI as ``eb service generate MODULE``. By default
+only required environment variables are asked for interactively (secrets are
+masked with ``*`` as they are typed and backspace works); pass ``--prompt-all``
+to also configure optional fields. Values are written to a ``<name>.env``
+environment file that the unit references via ``EnvironmentFile=`` (deployed
+root-only, keeping secrets out of the globally readable unit file). Only
+``click`` and the standard library are imported at module level so the main
+CLI does not pull in optional dependencies.
 """
 
 from __future__ import annotations
@@ -34,7 +32,7 @@ After=network.target
 [Service]
 Type={service_type}
 EnvironmentFile=/etc/eb/{name}.env
-ExecStart={exec_dir}/{name}
+ExecStart={exec_dir}/{bin}{extra_args}
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s QUIT $MAINPID
 Restart=always
@@ -72,6 +70,11 @@ def _load_settings(module: str) -> Any:
 def _is_secret(field: Any) -> bool:
     """Whether a pydantic FieldInfo annotation hides sensitive input."""
     return "SecretStr" in str(field.annotation)
+
+
+def _is_needed(field: Any) -> bool:
+    """Whether a field has no usable default (required or optional ``None``)."""
+    return field.is_required() or field.get_default() is None
 
 
 def _to_env(value: Any) -> str:
@@ -145,6 +148,10 @@ def _prompt_field(env_name: str, field: Any) -> str:
     default = field.get_default()
     if isinstance(default, bool):
         return "true" if click.confirm(env_name, default=default) else "false"
+    if default is None:
+        # Field without a default value: empty input keeps it unset
+        # (``env_ignore_empty`` treats an empty line as unset).
+        return click.prompt(env_name, default="", show_default=False)
     return click.prompt(env_name, default=_to_env(default))
 
 
@@ -155,7 +162,7 @@ def service() -> None:
     \b
     Examples:
       eb service generate ddns
-      eb service generate --name eb-ddns --type simple ddns
+      eb service generate --bin eb --extra-args "--quiet --upload" monitor
     """
 
 
@@ -169,39 +176,65 @@ def service() -> None:
     help="Directory of the installed console script [default: auto-detected].",
 )
 @click.option(
+    "--bin",
+    default=None,
+    help="Executable file name referenced by ExecStart [default: same as --name].",
+)
+@click.option(
     "-o",
     "--output-dir",
     type=click.Path(file_okay=False, path_type=Path),
     default=Path.cwd,
     help="Directory where the service file is written [default: current directory].",
 )
+@click.option(
+    "--extra-args",
+    default="",
+    help="Extra arguments appended to ExecStart, e.g. \"--quiet --upload\".",
+)
+@click.option(
+    "--prompt-all",
+    is_flag=True,
+    default=False,
+    help="Prompt for every Settings field; by default only required ones are asked.",
+)
 def generate(
     module: str,
     name: str | None,
     service_type: str,
     exec_dir: str | None,
+    bin: str | None,
     output_dir: Path,
+    extra_args: str,
+    prompt_all: bool,
 ) -> None:
     """Generate a systemd unit for MODULE.
 
     \b
     Example:
       eb service generate --name eb-ddns ddns
+      eb service generate --bin eb --extra-args "--quiet --upload" monitor
 
-    Environment variables are derived from the module's ``config.Settings``:
-    required values are prompted for, optional ones fall back to their
-    defaults. They are written to a ``<name>.env`` environment file that the
-    unit references via ``EnvironmentFile=``; the ExecStart points to the
+    By default only required environment variables are prompted for; optional
+    fields keep their built-in defaults. Pass ``--prompt-all`` to configure
+    every field. Values are written to a ``<name>.env`` environment file that
+    the unit references via ``EnvironmentFile=``; the ExecStart points to the
     pip-installed console script named after ``--name``.
     """
     settings = _load_settings(module)
     env_prefix = settings.model_config.get("env_prefix", "")
     name = name or f"eb-{module}"
+    bin_name = bin or name
     exec_dir = exec_dir or default_exec_dir()
     output_dir.mkdir(parents=True, exist_ok=True)
+    extra = f" {extra_args.strip()}" if extra_args.strip() else ""
 
     lines = []
     for field_name, field in settings.model_fields.items():
+        if not prompt_all and not _is_needed(field):
+            # Optional fields keep their built-in defaults; keep the env file
+            # minimal unless ``--prompt-all`` is requested.
+            continue
         env_name = f"{env_prefix}{field_name.upper()}"
         lines.append(f"{env_name}={_prompt_field(env_name, field)}")
 
@@ -216,6 +249,8 @@ def generate(
             name=name,
             service_type=service_type,
             exec_dir=exec_dir,
+            bin=bin_name,
+            extra_args=extra,
         ),
         encoding="utf-8",
     )
