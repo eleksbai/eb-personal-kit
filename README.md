@@ -29,7 +29,7 @@ EB_DDNS_TENCENTCLOUD_SECRET_ID=your-tencent-cloud-secret-id
 EB_DDNS_TENCENTCLOUD_SECRET_KEY=your-tencent-cloud-secret-key
 EB_DDNS_IP_SERVER=https://eleksbai.cn/tools/ip
 EB_DDNS_DOMAIN=your-domain
-EB_DDNS_ENABLE_DEBUG=false
+EB_DDNS_LOG_LEVEL=INFO
 ```
 
 也可用 `python -m eb_tools.ddns` 运行。

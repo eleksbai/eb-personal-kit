@@ -7,7 +7,7 @@ from click.testing import CliRunner
 from eb_tools.cli import main
 from eb_tools.service import _read_secret_chars, default_exec_dir
 
-INTERACTIVE_INPUT = "id-1\nkey-2\nexample.com\n\n\n"
+INTERACTIVE_INPUT = "id-1\nkey-2\nexample.com\n\n\n\n"
 
 
 def test_generate_ddns_service_matches_sample(tmp_path):
@@ -82,7 +82,8 @@ def test_generate_prompt_all_includes_optional_fields(tmp_path):
         "EB_DDNS_TENCENTCLOUD_SECRET_KEY=key-2\n"
         "EB_DDNS_DOMAIN=example.com\n"
         "EB_DDNS_IP_SERVER=https://eleksbai.cn/tools/ip\n"
-        "EB_DDNS_ENABLE_DEBUG=false\n"
+        "EB_DDNS_LOG_LEVEL=INFO\n"
+        "EB_DDNS_LOG_FORMAT=%(asctime)s %(levelname)s: %(message)s\n"
     )
 
 

@@ -90,7 +90,6 @@ class Sample:
         """Render the volatile metrics as a fixed-width single line so columns
         align across consecutive samples. Widths are reserved for the largest
         value of each 1024-based unit step (e.g. ``1023.9KB``)."""
-        disk_r = human_bytes(self.disk_read)
         return (
             "{time} cpu= {cpu:>5} | mem= {mem:<6}({pct:>5})"
             " | disk r= {disk_r:>8}  ,w= {disk_w:>8}"
@@ -98,14 +97,14 @@ class Sample:
             " | temp= {temp:>6}"
         ).format(
             time=time.strftime("%X", time.localtime(self.ts)),
-            cpu=f"{self.cpu_usage / 100:3.1f}%" ,
+            cpu=f"{self.cpu_usage / 100:3.1f}%",
             mem=human_bytes(self.mem_used),
             pct=f"{self.mem_used * 100 / self.mem_total:3.1f}%",
-            disk_r= f"{human_bytes(self.disk_read)}/s",
-            disk_w= f"{human_bytes(self.disk_write)}/s",
-            net_in= f"{human_bytes(self.net_in)}/s",
-            net_out= f"{human_bytes(self.net_out)}/s",
-            temp= f"{self.cpu_temp / 10}°C",
+            disk_r=f"{human_bytes(self.disk_read)}/s",
+            disk_w=f"{human_bytes(self.disk_write)}/s",
+            net_in=f"{human_bytes(self.net_in)}/s",
+            net_out=f"{human_bytes(self.net_out)}/s",
+            temp=f"{self.cpu_temp / 10}°C",
         )
 
 

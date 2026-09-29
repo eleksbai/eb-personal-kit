@@ -54,7 +54,7 @@ def test_loads_dot_env():
     assert settings.server_url == "http://10.0.0.1:8000"
     assert settings.interval == 15.0
     # Optional fields keep their defaults.
-    assert settings.enable_debug is False
+    assert settings.log_level == "INFO"
 
 
 def test_env_overrides_dot_env(monkeypatch):
@@ -88,12 +88,12 @@ def test_get_settings_init_overrides_win(monkeypatch):
         public_key_path="/cli.pem",
         server_url="http://from-cli:8000",
         interval=30,
-        enable_debug=True,
+        log_level="DEBUG",
     )
     assert settings.public_key_path == "/cli.pem"
     assert settings.server_url == "http://from-cli:8000"
     assert settings.interval == 30.0
-    assert settings.enable_debug is True
+    assert settings.log_level == "DEBUG"
 
 
 def test_defaults():

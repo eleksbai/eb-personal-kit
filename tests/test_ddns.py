@@ -7,9 +7,21 @@ from click.testing import CliRunner
 from pydantic import SecretStr, ValidationError
 
 from eb_tools.ddns.cli import main
-from eb_tools.ddns.config import DEFAULT_IP_SERVER, Settings, get_settings
+from eb_tools.ddns.config import (
+    DEFAULT_IP_SERVER,
+    Settings,
+    get_settings,
+)
+from eb_tools.utils import DEFAULT_LOG_FORMAT
 
-ENV_NAMES = ("TENCENTCLOUD_SECRET_ID", "TENCENTCLOUD_SECRET_KEY", "IP_SERVER", "DOMAIN", "DEBUG")
+ENV_NAMES = (
+    "TENCENTCLOUD_SECRET_ID",
+    "TENCENTCLOUD_SECRET_KEY",
+    "IP_SERVER",
+    "DOMAIN",
+    "LOG_LEVEL",
+    "LOG_FORMAT",
+)
 
 
 @pytest.fixture(autouse=True)
@@ -37,14 +49,15 @@ def test_loads_dot_env():
         "EB_DDNS_TENCENTCLOUD_SECRET_ID=secret-id-value-123\n"
         "EB_DDNS_TENCENTCLOUD_SECRET_KEY=secret-key-value-456\n"
         "EB_DDNS_DOMAIN=example.com\n"
-        "EB_DDNS_ENABLE_DEBUG=True\n",
+        "EB_DDNS_LOG_LEVEL=DEBUG\n",
         encoding="utf-8",
     )
     settings = Settings()
     assert settings.tencentcloud_secret_id.get_secret_value() == "secret-id-value-123"
     assert settings.tencentcloud_secret_key.get_secret_value() == "secret-key-value-456"
     assert settings.domain == "example.com"
-    assert settings.enable_debug is True
+    assert settings.log_level == "DEBUG"
+    assert settings.log_format == DEFAULT_LOG_FORMAT
     # Secrets must not leak through repr/logs.
     assert "secret-id-value-123" not in repr(settings)
     assert "secret-key-value-456" not in repr(settings)
@@ -91,11 +104,11 @@ def test_get_settings_init_overrides_win(monkeypatch):
         tencentcloud_secret_id="cli-id",
         tencentcloud_secret_key="cli-key",
         domain="cli.example.com",
-        enable_debug=True,
+        log_level="DEBUG",
     )
     assert settings.tencentcloud_secret_id == SecretStr("cli-id")
     assert settings.domain == "cli.example.com"
-    assert settings.enable_debug is True
+    assert settings.log_level == "DEBUG"
 
 
 def test_main_reports_missing_settings():

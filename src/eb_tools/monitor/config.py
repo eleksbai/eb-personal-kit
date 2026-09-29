@@ -6,25 +6,13 @@ a ``.env`` file in the working directory, then field defaults.
 
 from __future__ import annotations
 
-import logging
 from functools import lru_cache
 from typing import Any
 
 from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
-def setup_logging(config: Settings) -> logging.Logger:
-    """Configure the ``monitor`` logger from the settings."""
-    level = logging.DEBUG if config.enable_debug else logging.INFO
-    formatter = logging.Formatter(config.log_format)
-    logger = logging.getLogger("monitor")
-    logger.setLevel(level)
-    terminal = logging.StreamHandler()
-    terminal.setFormatter(formatter)
-    logger.handlers.clear()
-    logger.addHandler(terminal)
-    return logger
+from eb_tools.utils import DEFAULT_LOG_FORMAT
 
 
 class Settings(BaseSettings):
@@ -47,8 +35,8 @@ class Settings(BaseSettings):
 
     # Optional: built-in defaults.
     interval: float = 5
-    enable_debug: bool = False
-    log_format: str = "%(asctime)s %(levelname)s: %(message)s"
+    log_level: str = "INFO"
+    log_format: str = DEFAULT_LOG_FORMAT
     upload: bool = False
     quiet: bool = False
 

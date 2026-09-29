@@ -62,7 +62,8 @@ def main(
     from pydantic import ValidationError
 
     from eb_tools.monitor.client import Monitor
-    from eb_tools.monitor.config import get_settings, setup_logging
+    from eb_tools.monitor.config import get_settings
+    from eb_tools.utils import setup_logging
 
     # Init overrides have the highest priority in pydantic-settings; required
     # fields missing everywhere are reported as a ValidationError.
@@ -78,14 +79,14 @@ def main(
         if value
     }
     if debug:
-        overrides["enable_debug"] = True
+        overrides["log_level"] = "DEBUG"
 
     try:
         config = get_settings(**overrides)
     except ValidationError as err:
         raise click.UsageError(f"Invalid configuration: {err}") from err
 
-    setup_logging(config)
+    setup_logging("monitor", log_level=config.log_level, log_format=config.log_format)
     Monitor(config).run()
 
 

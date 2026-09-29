@@ -190,7 +190,7 @@ def service() -> None:
 @click.option(
     "--extra-args",
     default="",
-    help="Extra arguments appended to ExecStart, e.g. \"--quiet --upload\".",
+    help='Extra arguments appended to ExecStart, e.g. "--quiet --upload".',
 )
 @click.option(
     "--prompt-all",
