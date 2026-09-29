@@ -10,19 +10,19 @@ pip install eb-tools
 
 ## Tools
 
-### eb-ddns (DDNS 客户端)
+### eb-ddns (DDNS client)
 
-作为独立脚本分发，通过腾讯云 DNSPod API 保持域名 A 记录与当前公网 IP 同步。
+Distributed as a standalone script; keeps a domain's A record in sync with the current public IP through the Tencent Cloud DNSPod API.
 
 ```bash
-# 配置：在工作目录创建 .env 并填入密钥，然后直接运行
+# Configure: create a .env in the working directory, fill in the credentials, then run directly
 eb-ddns
 
-# 或直接通过选项/环境变量（EB_DDNS_*）传参
+# Or pass options / environment variables (EB_DDNS_*) directly
 eb-ddns --secret-id <id> --secret-key <key> --domain example.com
 ```
 
-.env 示例：
+Example .env:
 
 ```dotenv
 EB_DDNS_TENCENTCLOUD_SECRET_ID=your-tencent-cloud-secret-id
@@ -32,21 +32,21 @@ EB_DDNS_DOMAIN=your-domain
 EB_DDNS_LOG_LEVEL=INFO
 ```
 
-也可用 `python -m eb_tools.ddns` 运行。
+It can also be run with `python -m eb_tools.ddns`.
 
-### systemd 服务部署（eb service generate）
+### systemd service deployment (eb service generate)
 
-主 CLI 可为任意子模块生成 systemd 服务文件，环境变量依据该模块 `config.Settings` 的字段派生：必填项交互输入（密钥逐字符显示 `*` 掩码，支持退格删除），可选项取默认值：
+The main CLI can generate systemd service files for any submodule. Environment variables are derived from that module's `config.Settings` fields: required fields are prompted interactively (secrets are masked with `*` per keystroke, backspace supported), optional fields take their defaults:
 
 ```bash
-# 位置参数为模块名，--name 决定服务文件名与可执行文件名（默认 eb-<module>）
+# Positional argument is the module name; --name decides the service file and executable names (default eb-<module>)
 eb service generate --name eb-ddns ddns
 
-# 通过 --type 修改 systemd Type（默认 idle）
+# Change the systemd Type via --type (default idle)
 eb service generate --name eb-ddns --type simple ddns
 ```
 
-生成 `<name>.service` 与 `<name>.env` 两个文件：配置写入 `<name>.env`（每行一项 `KEY=VALUE`），服务文件通过 `EnvironmentFile=` 引用它，`ExecStart` 指向当前用户的默认可执行目录（venv 内为 venv 的脚本目录，否则为 `~/.local/bin`，即 `pip install --user` 的路径；可用 `--exec-dir` 覆盖）：
+Generates two files, `<name>.service` and `<name>.env`: configuration is written to `<name>.env` (one `KEY=VALUE` per line), the service file references it via `EnvironmentFile=`, and `ExecStart` points to the current user's default executable directory (the venv script directory when inside a venv, otherwise `~/.local/bin`, i.e. the `pip install --user` path; override with `--exec-dir`):
 
 ```ini
 [Unit]
@@ -62,7 +62,7 @@ RestartSec=30
 ...
 ```
 
-安装（`<name>.env` 生成时即为 `600` 权限，`mv` 移动后保持不变；因生成者是普通用户而 `mv` 不改所有者，补一步 `chown` 交给 root；移动后源目录不残留密钥文件）：
+Installation (the generated `<name>.env` already has `600` permissions and `mv` preserves them; since the generator runs as a regular user and `mv` does not change the owner, an extra `chown` hands it to root; no secret files are left behind in the source directory after moving):
 
 ```bash
 sudo mkdir -p /etc/eb
@@ -94,19 +94,19 @@ uv run ruff format .
 uv build
 ```
 
-### 开发调试（免安装直接运行）
+### Development debugging (run without installing)
 
-开发时无需 `uv build` / `pip install`，通过 `python -m` 直接以模块方式运行各 CLI（等价于安装后的 `eb` / `eb-ddns` console script）：
+During development there is no need for `uv build` / `pip install`; run each CLI directly as a module via `python -m` (equivalent to the installed `eb` / `eb-ddns` console scripts):
 
 ```bash
-# 主 CLI（含 service 子命令组），等价于安装后的 eb
+# Main CLI (with the service command group), equivalent to the installed eb
 uv run python -m eb_tools.cli --help
 uv run python -m eb_tools.cli service --help
 uv run python -m eb_tools.cli service generate --name eb-ddns ddns
 
-# ddns CLI，等价于安装后的 eb-ddns
+# ddns CLI, equivalent to the installed eb-ddns
 uv run python -m eb_tools.ddns.cli --help
 uv run python -m eb_tools.ddns.cli --debug
 ```
 
-注意：`python -m` 需指定到模块文件（如 `eb_tools.ddns.cli`）或带 `__main__.py` 的包（如 `eb_tools.ddns`），且各 CLI 模块内已有 `if __name__ == "__main__"` 入口守卫，直接执行即可生效。
+Note: `python -m` must point to a module file (e.g. `eb_tools.ddns.cli`) or a package with a `__main__.py` (e.g. `eb_tools.ddns`); each CLI module already contains an `if __name__ == "__main__"` entry guard, so running them directly works out of the box.

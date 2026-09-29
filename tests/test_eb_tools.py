@@ -9,7 +9,7 @@ from eb_tools.utils import setup_logging
 
 
 def test_version():
-    # 版本由 git tag 派生（hatch-vcs），本地未打 tag 时为 0.1.dev* 形式
+    # Version is derived from git tags (hatch-vcs); 0.1.dev* without a local tag
     assert eb_tools.__version__
     assert eb_tools.__version__ != "0.0.0"
 

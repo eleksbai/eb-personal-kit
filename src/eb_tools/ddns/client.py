@@ -42,7 +42,7 @@ class DDNS:
 
         self.record_id = ""
         self.record_type = "A"
-        self.record_line = "默认"
+        self.record_line = "default"
         self.record_line_id = ""
 
     def run(self) -> None:
@@ -78,15 +78,15 @@ class DDNS:
         logger.info(f"current ip: {self.current_ip}")
 
     def describe_record_list(self) -> None:
-        # 实例化一个请求对象,每个接口都会对应一个request对象
+        # Instantiate a request object; each API call has a corresponding request object
         req = models.DescribeRecordListRequest()
         self.params = {"Domain": self.config.domain, "RecordType": self.record_type}
         logger.debug(f"DescribeRecordList request: {json.dumps(self.params, ensure_ascii=False)}")
         req.from_json_string(json.dumps(self.params))
 
-        # 返回的resp是一个DescribeRecordListResponse的实例，与请求对象对应
+        # The returned resp is a DescribeRecordListResponse instance matching the request
         resp = self.client.DescribeRecordList(req)
-        # 输出json格式的字符串回包
+        # Log the JSON response payload
         logger.debug(f"DescribeRecordList response: {resp.to_json_string()}")
 
         for record in resp.RecordList:
@@ -97,7 +97,7 @@ class DDNS:
                 self.record_line_id = record.LineId
 
     def modify_record(self) -> None:
-        # 实例化一个请求对象,每个接口都会对应一个request对象
+        # Instantiate a request object; each API call has a corresponding request object
         req = models.ModifyRecordRequest()
         self.params = {
             "Domain": self.config.domain,
@@ -110,7 +110,7 @@ class DDNS:
         logger.info(f"ModifyRecord request: {json.dumps(self.params, ensure_ascii=False)}")
         req.from_json_string(json.dumps(self.params))
 
-        # 返回的resp是一个ModifyRecordResponse的实例，与请求对象对应
+        # The returned resp is a ModifyRecordResponse instance matching the request
         resp = self.client.ModifyRecord(req)
-        # 输出json格式的字符串回包
+        # Log the JSON response payload
         logger.info(f"ModifyRecord response: {resp.to_json_string()}")
