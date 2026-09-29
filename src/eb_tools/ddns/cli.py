@@ -13,7 +13,6 @@ from importlib import metadata
 
 import click
 
-LOG_FILENAME = "ddns_tencent.log"
 LOG_FORMAT = "%(asctime)s %(levelname)s: %(message)s"
 
 
@@ -26,18 +25,15 @@ def get_version() -> str:
 
 
 def setup_logging(enable_debug: bool) -> logging.Logger:
-    """Configure the ``ddns`` logger with both file and stream handlers."""
+    """Configure the ``ddns`` logger with a stream handler."""
     level = logging.DEBUG if enable_debug else logging.INFO
     formatter = logging.Formatter(LOG_FORMAT)
     logger = logging.getLogger("ddns")
     logger.setLevel(level)
-    handler = logging.FileHandler(LOG_FILENAME, encoding="utf-8")
-    handler.setFormatter(formatter)
-    stream = logging.StreamHandler()
-    stream.setFormatter(formatter)
+    terminal = logging.StreamHandler()
+    terminal.setFormatter(formatter)
     logger.handlers.clear()
-    logger.addHandler(handler)
-    logger.addHandler(stream)
+    logger.addHandler(terminal)
     return logger
 
 
