@@ -3,7 +3,7 @@ requires = ["hatchling>=1.26", "hatch-vcs>=0.4"]
 build-backend = "hatchling.build"
 
 [project]
-name = "eb-tools"
+name = "eb-personal-kit"
 description = "A collection of handy tools"
 readme = "README.md"
 license = "MIT"
@@ -39,8 +39,8 @@ Repository = "https://github.com/eleksbai/eb-tools"
 Issues = "https://github.com/eleksbai/eb-tools/issues"
 
 [project.scripts]
-eb = "eb_tools.cli:main"
-eb-ddns = "eb_tools.ddns.cli:main"
+eb = "eb_personal_kit.cli:main"
+eb-ddns = "eb_personal_kit.ddns.cli:main"
 
 [tool.hatch.version]
 source = "vcs"
@@ -49,10 +49,10 @@ source = "vcs"
 fallback_version = "0.1.0"
 
 [tool.hatch.build.hooks.vcs]
-version-file = "src/eb_tools/_version.py"
+version-file = "src/eb_personal_kit/_version.py"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/eb_tools"]
+packages = ["src/eb_personal_kit"]
 
 [dependency-groups]
 dev = [

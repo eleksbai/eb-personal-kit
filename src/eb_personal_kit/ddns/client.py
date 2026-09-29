@@ -18,7 +18,7 @@ from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentClo
 from tencentcloud.dnspod.v20210323 import dnspod_client, models
 from urllib3.exceptions import NameResolutionError
 
-from eb_tools.ddns.config import Settings
+from eb_personal_kit.ddns.config import Settings
 
 logger = logging.getLogger("ddns")
 

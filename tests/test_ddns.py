@@ -6,13 +6,13 @@ import pytest
 from click.testing import CliRunner
 from pydantic import SecretStr, ValidationError
 
-from eb_tools.ddns.cli import main
-from eb_tools.ddns.config import (
+from eb_personal_kit.ddns.cli import main
+from eb_personal_kit.ddns.config import (
     DEFAULT_IP_SERVER,
     Settings,
     get_settings,
 )
-from eb_tools.utils import DEFAULT_LOG_FORMAT
+from eb_personal_kit.utils import DEFAULT_LOG_FORMAT
 
 ENV_NAMES = (
     "TENCENTCLOUD_SECRET_ID",
@@ -122,7 +122,7 @@ def test_entry_point_importable_without_optional_deps():
     # The ddns extra (pydantic-settings / requests / tencentcloud-sdk) must
     # not be needed to load the CLI.
     code = (
-        "import sys; import eb_tools.ddns.cli; import eb_tools.ddns.__main__; "
+        "import sys; import eb_personal_kit.ddns.cli; import eb_personal_kit.ddns.__main__; "
         "assert 'pydantic_settings' not in sys.modules; "
         "assert 'requests' not in sys.modules; assert 'tencentcloud' not in sys.modules"
     )

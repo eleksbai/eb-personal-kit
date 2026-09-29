@@ -12,7 +12,7 @@ from typing import Any
 from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from eb_tools.utils import DEFAULT_LOG_FORMAT
+from eb_personal_kit.utils import DEFAULT_LOG_FORMAT
 
 
 class Settings(BaseSettings):

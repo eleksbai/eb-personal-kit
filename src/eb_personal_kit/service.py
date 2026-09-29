@@ -1,4 +1,4 @@
-"""Generate systemd service files for eb-tools submodules.
+"""Generate systemd service files for eb-personal-kit submodules.
 
 Exposed through the main CLI as ``eb service generate MODULE``. By default
 only required environment variables are asked for interactively (secrets are
@@ -48,7 +48,7 @@ def default_exec_dir() -> str:
 
     Inside a virtualenv this is the venv script directory; otherwise the
     current user's default script directory (``~/.local/bin``, matching
-    ``pip install --user eb-tools``) is used.
+    ``pip install --user eb-personal-kit``) is used.
     """
     if sys.prefix != getattr(sys, "base_prefix", sys.prefix):
         return sysconfig.get_path("scripts") or PIP_DEFAULT_EXEC_DIR
@@ -56,14 +56,14 @@ def default_exec_dir() -> str:
 
 
 def _load_settings(module: str) -> Any:
-    """Return the ``Settings`` class defined in ``eb_tools.<module>.config``."""
+    """Return the ``Settings`` class defined in ``eb_personal_kit.<module>.config``."""
     try:
-        config_module = importlib.import_module(f"eb_tools.{module}.config")
+        config_module = importlib.import_module(f"eb_personal_kit.{module}.config")
     except ImportError as err:
         raise click.BadParameter(f"unknown module {module!r}: {err}", param_hint="MODULE") from err
     settings = getattr(config_module, "Settings", None)
     if settings is None:
-        raise click.BadParameter(f"eb_tools.{module}.config has no Settings", param_hint="MODULE")
+        raise click.BadParameter(f"eb_personal_kit.{module}.config has no Settings", param_hint="MODULE")
     return settings
 
 
@@ -157,7 +157,7 @@ def _prompt_field(env_name: str, field: Any) -> str:
 
 @click.group(name="service")
 def service() -> None:
-    """Manage systemd service files for eb-tools modules.
+    """Manage systemd service files for eb-personal-kit modules.
 
     \b
     Examples:

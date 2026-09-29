@@ -10,13 +10,13 @@ from __future__ import annotations
 
 import click
 
-import eb_tools
+import eb_personal_kit
 
 
 @click.command(
     context_settings={"help_option_names": ["-h", "--help"]},
 )
-@click.version_option(version=eb_tools.__version__, prog_name="eb-ddns")
+@click.version_option(version=eb_personal_kit.__version__, prog_name="eb-ddns")
 @click.option("--secret-id", default=None, help="Tencent Cloud secret id.")
 @click.option("--secret-key", default=None, help="Tencent Cloud secret key.")
 @click.option(
@@ -38,9 +38,9 @@ def main(
     """
     from pydantic import ValidationError
 
-    from eb_tools.ddns.client import DDNS
-    from eb_tools.ddns.config import get_settings
-    from eb_tools.utils import setup_logging
+    from eb_personal_kit.ddns.client import DDNS
+    from eb_personal_kit.ddns.config import get_settings
+    from eb_personal_kit.utils import setup_logging
 
     # Init overrides have the highest priority in pydantic-settings; required
     # fields missing everywhere are reported as a ValidationError.

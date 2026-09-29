@@ -4,8 +4,8 @@ import sysconfig
 
 from click.testing import CliRunner
 
-from eb_tools.cli import main
-from eb_tools.service import _read_secret_chars, default_exec_dir
+from eb_personal_kit.cli import main
+from eb_personal_kit.service import _read_secret_chars, default_exec_dir
 
 INTERACTIVE_INPUT = "id-1\nkey-2\nexample.com\n\n\n\n"
 
@@ -163,7 +163,7 @@ def test_default_exec_dir_outside_venv(monkeypatch):
 def test_service_importable_without_optional_deps():
     # Loading the main CLI must not require the ddns extra (pydantic-settings etc.).
     code = (
-        "import sys; import eb_tools.cli; import eb_tools.service; "
+        "import sys; import eb_personal_kit.cli; import eb_personal_kit.service; "
         "assert 'pydantic_settings' not in sys.modules; "
         "assert 'requests' not in sys.modules; assert 'tencentcloud' not in sys.modules"
     )

@@ -1,12 +1,14 @@
-# eb-tools
+# eb-personal-kit
 
-A collection of handy tools.
+A collection of handy tools. 
 
 ## Install
 
 ```bash
-pip install eb-tools
+pip install eb-personal-kit
 ```
+
+Removing this GitHub trusted publisher will prevent automated package uploads from this source. You can re-add it later if needed
 
 ## Usage
 
@@ -51,7 +53,7 @@ uv sync          # set up dev environment
 uv run pytest    # run tests
 uv build         # build
 
-python -m eb_tools.cli  service generate --bin eb --extra-args "monitor --quiet --upload" monitor
+python -m eb_personal_kit.cli  service generate --bin eb --extra-args "monitor --quiet --upload" monitor
 ```
 
 ## Publish

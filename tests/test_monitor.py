@@ -6,8 +6,8 @@ import pytest
 from click.testing import CliRunner
 from pydantic import ValidationError
 
-from eb_tools.monitor.cli import main
-from eb_tools.monitor.config import Settings, get_settings
+from eb_personal_kit.monitor.cli import main
+from eb_personal_kit.monitor.config import Settings, get_settings
 
 ENV_NAMES = ("PUBLIC_KEY_PATH", "SERVER_URL", "INTERVAL", "DEBUG", "UPLOAD", "QUIET")
 
@@ -114,7 +114,7 @@ def test_entry_point_importable_without_optional_deps():
     # The monitor dependencies (httpx / psutil / cryptography) must not be
     # needed to load the CLI.
     code = (
-        "import sys; import eb_tools.monitor.cli; import eb_tools.monitor.__main__; "
+        "import sys; import eb_personal_kit.monitor.cli; import eb_personal_kit.monitor.__main__; "
         "assert 'pydantic_settings' not in sys.modules; "
         "assert 'httpx' not in sys.modules; "
         "assert 'psutil' not in sys.modules; "

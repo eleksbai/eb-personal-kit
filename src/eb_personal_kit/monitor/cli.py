@@ -1,7 +1,7 @@
 """Command-line interface for the monitor sampling client.
 
 Exposed as the ``eb monitor`` subcommand of the main CLI (and runnable as
-``python -m eb_tools.monitor``). Heavy optional dependencies are imported
+``python -m eb_personal_kit.monitor``). Heavy optional dependencies are imported
 lazily inside :func:`main` so that importing this module does not require
 the ``monitor`` dependencies.
 """
@@ -10,14 +10,14 @@ from __future__ import annotations
 
 import click
 
-import eb_tools
+import eb_personal_kit
 
 
 @click.command(
     name="monitor",
     context_settings={"help_option_names": ["-h", "--help"]},
 )
-@click.version_option(version=eb_tools.__version__, prog_name="eb-monitor")
+@click.version_option(version=eb_personal_kit.__version__, prog_name="eb-monitor")
 @click.option(
     "--public-key-path",
     default=None,
@@ -53,9 +53,9 @@ def main(
     """
     from pydantic import ValidationError
 
-    from eb_tools.monitor.client import Monitor
-    from eb_tools.monitor.config import get_settings
-    from eb_tools.utils import setup_logging
+    from eb_personal_kit.monitor.client import Monitor
+    from eb_personal_kit.monitor.config import get_settings
+    from eb_personal_kit.utils import setup_logging
 
     # Init overrides have the highest priority in pydantic-settings; required
     # fields missing everywhere are reported as a ValidationError.

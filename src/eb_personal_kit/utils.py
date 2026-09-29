@@ -1,4 +1,4 @@
-"""Shared helpers for eb-tools submodules."""
+"""Shared helpers for eb-personal-kit submodules."""
 
 from __future__ import annotations
 

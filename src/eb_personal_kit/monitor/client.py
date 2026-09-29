@@ -31,8 +31,8 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
-from eb_tools.monitor.config import Settings
-from eb_tools.utils import human_bytes
+from eb_personal_kit.monitor.config import Settings
+from eb_personal_kit.utils import human_bytes
 
 logger = logging.getLogger("monitor")
 

@@ -353,7 +353,7 @@ wheels = [
 ]
 
 [[package]]
-name = "eb-tools"
+name = "eb-personal-kit"
 source = { editable = "." }
 dependencies = [
     { name = "click" },
