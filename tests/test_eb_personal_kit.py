@@ -29,3 +29,17 @@ def test_setup_logging_applies_level_and_format():
 def test_setup_logging_rejects_unknown_level():
     with pytest.raises(ValueError, match="invalid log level"):
         setup_logging("test-logger", log_level="nope")
+
+
+def test_setup_logging_falls_back_to_file_without_console(monkeypatch, tmp_path):
+    # pythonw (windowed autostart) runs with sys.stderr = None; logging must
+    # land in a file instead of being silently dropped.
+    import eb_personal_kit.utils
+
+    monkeypatch.setattr("sys.stderr", None)
+    monkeypatch.setattr(eb_personal_kit.utils, "LOG_DIR", tmp_path / "logs")
+    logger = setup_logging("no-console-logger")
+    logger.info("hello from pythonw")
+    log_file = tmp_path / "logs" / "no-console-logger.log"
+    assert log_file.exists()
+    assert "hello from pythonw" in log_file.read_text(encoding="utf-8")

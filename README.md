@@ -46,6 +46,38 @@ sudo systemctl enable --now eb-monitor
 eb monitor
 ```
 
+### Theme
+
+Switches the system colour scheme with the daylight, based on the offline-computed sunrise/sunset times (via `astral`) for the configured location (defaults to Xiamen).
+
+```bash
+# Flip the current theme once (dark -> light or light -> dark)
+eb theme
+
+# Switch per the current sun position instead of flipping
+# (--dry-run logs the decision without touching the system)
+eb theme --auto --dry-run --log-level DEBUG
+
+# --loop repeats the action on the check cadence (pair with --auto to keep
+# following the daylight; EB_THEME_CHECK_INTERVAL controls the cadence)
+eb theme --auto --loop
+
+# Install the current command as a logon autostart entry, then exit
+# (Windows: HKCU ...\Run value; Linux: systemd user unit; macOS: LaunchAgent.
+# On Windows the entry is launched via pythonw.exe, so it runs silently in
+# the background with no console window or taskbar icon; without a console
+# logs go to ~/.eb-personal-kit/logs/theme.log.
+# NOTE: on Windows this must NOT be installed from inside a virtualenv —
+# a venv's pythonw.exe cannot start truly silently in the background.
+# Install eb-personal-kit into the system Python instead)
+eb theme --auto --loop --install
+
+# Remove the autostart entry again
+eb theme --uninstall
+```
+
+Config resolves in order: CLI options, `EB_THEME_*` environment variables, a `.env` file, then defaults. `TARGET` selects which Windows colour-scheme values are switched (`apps`/`system`/`both`). On Linux it uses `gsettings color-scheme`; on macOS, AppleScript dark mode.
+
 ## Development
 
 ```bash

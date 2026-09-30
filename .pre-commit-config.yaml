@@ -22,7 +22,8 @@ repos:
     hooks:
       - id: pytest
         name: pytest
-        entry: uv run pytest
+        # bypass `uv run` trampoline errors on Windows
+        entry: .venv/Scripts/python.exe -m pytest
         language: system
         pass_filenames: false
         always_run: true
