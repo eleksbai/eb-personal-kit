@@ -63,7 +63,9 @@ def _load_settings(module: str) -> Any:
         raise click.BadParameter(f"unknown module {module!r}: {err}", param_hint="MODULE") from err
     settings = getattr(config_module, "Settings", None)
     if settings is None:
-        raise click.BadParameter(f"eb_personal_kit.{module}.config has no Settings", param_hint="MODULE")
+        raise click.BadParameter(
+            f"eb_personal_kit.{module}.config has no Settings", param_hint="MODULE"
+        )
     return settings
 
 
