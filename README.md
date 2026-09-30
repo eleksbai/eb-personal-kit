@@ -1,6 +1,6 @@
 # eb-personal-kit
 
-A collection of handy tools. 
+A collection of handy tools.
 
 ## Install
 
@@ -17,8 +17,8 @@ Removing this GitHub trusted publisher will prevent automated package uploads fr
 DDNS client that keeps a domain's A record in sync with the current public IP via Tencent Cloud DNSPod.
 
 ```bash
-# Quick Install Service 
-eb service generate ddns 
+# Quick Install Service
+eb service generate ddns
 sudo mkdir -p /etc/eb
 sudo mv eb-ddns.env /etc/eb/eb-ddns.env
 sudo mv eb-ddns.service /etc/systemd/system/
@@ -26,14 +26,14 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now eb-ddns
 
 # Reads config from .env (EB_DDNS_*) in the working directory
-eb-ddns 
+eb-ddns
 ```
 
 ### Monitor
 
 
 ```bash
-# Quick Install Service 
+# Quick Install Service
 service generate --bin eb --extra-args "monitor --quiet --upload" monitor
 sudo mkdir -p /etc/eb
 sudo mv eb-monitor.env /etc/eb/eb-monitor.env
