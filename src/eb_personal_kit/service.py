@@ -164,7 +164,7 @@ def service() -> None:
     \b
     Examples:
       eb service generate ddns
-      eb service generate --bin eb --extra-args "--quiet --upload" monitor
+      eb service generate --bin eb --extra-args "monitor --quiet --upload" monitor
     """
 
 

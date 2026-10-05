@@ -5,6 +5,8 @@ A collection of handy tools.
 ## Install
 
 ```bash
+# use uv tool install to global
+uv tool install eb-personal-kit
 pip install eb-personal-kit
 ```
 
